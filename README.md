@@ -83,21 +83,10 @@ root/
 -   `docker compose up` - Start all services
 -   `docker compose up --build` - Rebuild and start services, when dependencies change
 
-## Environment Variables
+## NOTES
 
-These are all defined in the docker compose, but should ideally be moved to a .env file for production
+### Trade offs
 
-### Frontend
-
--   `NEXT_PUBLIC_API_URL` - Backend API URL (default: http://localhost:3001)
-
-### Backend
-
--   `NODE_ENV` - Environment (development/production)
--   `PORT` - Server port (default: 3001)
--   `DATABASE_URL` - SQLite connection string (file:./dev.db)
-
-## API Endpoints
-
--   `GET /` - Health check
--   `GET /api/health` - API health status
+-   The data validators for the input are very basic, given more time these would return a reason why the validation failed to display a better error to the user.
+-   The input isn't sanitised very well and relies on Prisma doing it, it could be manually sanitised for better security.
+-   Database using SQLlite, this was done for speed, and so I could commit the project with some example data.

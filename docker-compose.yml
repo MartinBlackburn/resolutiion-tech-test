@@ -27,7 +27,6 @@ services:
             - "3001:3001"
         environment:
             - NODE_ENV=development
-            - DATABASE_URL=file:./dev.db
             - PORT=3001
         volumes:
             - ./backend:/app

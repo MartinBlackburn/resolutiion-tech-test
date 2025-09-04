@@ -8,10 +8,10 @@ Build a "Team Task Board" application where users can create, update, and organi
 
 Expose a REST (or GraphQL) API with endpoints to:
 
--   Create a task
--   Update a task (title, description, status)
--   Delete a task
--   List all tasks
+-   ✅ Create a task
+-   ✅ Update a task (title, description, status)
+-   ✅ Delete a task
+-   ✅ List all tasks
 
 Each task should have: id, title, description, and status (todo, in-progress, done).
 Use a simple database (SQLite, Postgres, or MongoDB).
