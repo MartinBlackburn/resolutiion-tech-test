@@ -20,8 +20,8 @@ Use a simple database (SQLite, Postgres, or MongoDB).
 
 Display a task board (like a simplified Trello):
 
--   Columns for todo, in-progress, and done.
--   Tasks should appear under the correct column based on status.
+-   ✅ Columns for todo, in-progress, and done.
+-   ✅ Tasks should appear under the correct column based on status.
 
 Provide UI to:
 
