@@ -1,4 +1,7 @@
-FROM node:22-alpine
+FROM node:22-slim
+
+RUN apt-get update
+RUN apt-get install -y openssl
 
 WORKDIR /app
 
@@ -10,6 +13,9 @@ RUN npm install
 
 # Copy source code
 COPY . .
+
+# Generate Prisma client
+RUN npm run prisma:generate
 
 # Expose port
 EXPOSE 3001
