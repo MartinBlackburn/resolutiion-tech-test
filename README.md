@@ -100,3 +100,4 @@ root/
 -   the optimistic updates are very basic - the tasks are fetched after an create/update, without a library. Given more time I would use Redux or React Query to manage this in a much nicer way
 -   use a monorepo setup (Lerna, Turborepo, NX, etc), so the two apps can be versioned and deployed separately
 -   better unit test coverage, I've only tested one component, one API util and part of the backend routes
+-   filtering: this only filters on title, but could also filter via description. Rather then hiding the tasks completely, the filter could change teh style and fade the tasks

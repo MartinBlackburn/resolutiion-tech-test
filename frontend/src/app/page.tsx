@@ -23,6 +23,7 @@ const Home = () => {
     const [errors, setErrors] = useState<string[]>([]);
     const [taskModal, setTaskModal] = useState<boolean>(false);
     const [editTask, setEditTask] = useState<TaskType>();
+    const [filter, setFilter] = useState<string>();
 
     const addError = useCallback(
         (error: string) => {
@@ -96,14 +97,24 @@ const Home = () => {
         );
     }
 
+    const filteredTasks = tasks.filter((task) => {
+        return task.title.toLowerCase().includes(filter?.toLowerCase() || "");
+    });
+
     return (
         <Fragment>
             <div className="homePage__controls">
+                <input
+                    type="text"
+                    placeholder="Filter tasks"
+                    value={filter}
+                    onChange={(e) => setFilter(e.target.value)}
+                />
                 <button onClick={() => setTaskModal(true)}>Create task</button>
             </div>
 
             <Board
-                tasks={tasks}
+                tasks={filteredTasks}
                 onTaskStatusUpdate={handleUpdateTask}
                 onTaskEdit={(task) => {
                     setEditTask(task);

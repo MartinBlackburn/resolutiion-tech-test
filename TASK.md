@@ -34,7 +34,7 @@ Use TypeScript throughout and show proper typing (no any).
 
 ## Extra Credit (Optional)
 
--   Add search/filter for tasks.
+-   ✅ Add search/filter for tasks.
 -   ✅ Implement basic optimistic updates with React Query (or equivalent).
 -   ✅ Write one or two simple tests (backend route test or frontend component test).
 -   ✅ Containerize with Docker for easy run.
