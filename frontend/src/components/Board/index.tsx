@@ -1,8 +1,11 @@
+"use client";
+
 // libraries
 import React from "react";
+import { DndContext, DragEndEvent, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 
 // components
-import Task from "@/components/Task";
+import Column from "@/components/Column";
 
 // types
 import { Task as TaskType, TaskStatus } from "@/types/task";
@@ -12,9 +15,12 @@ import "./styles.css";
 
 interface IProps {
     tasks: TaskType[];
+    onTaskStatusUpdate: (taskId: string, newStatus: TaskStatus) => Promise<void>;
 }
 
-const TodoBoard: React.FC<IProps> = ({ tasks }) => {
+const Board: React.FC<IProps> = ({ tasks, onTaskStatusUpdate }) => {
+    const sensors = useSensors(useSensor(PointerSensor));
+
     const getTasksByStatus = (status: TaskStatus): TaskType[] => {
         return tasks.filter((task) => task.status === status);
     };
@@ -23,63 +29,36 @@ const TodoBoard: React.FC<IProps> = ({ tasks }) => {
     const inProgressTasks = getTasksByStatus("INPROGRESS");
     const doneTasks = getTasksByStatus("DONE");
 
+    const handleDragEnd = async (event: DragEndEvent) => {
+        const { active, over } = event;
+
+        if (!over) return;
+
+        const taskId = active.id as string;
+        const newStatus = over.id as TaskStatus;
+
+        // Find the current task
+        const currentTask = tasks.find((t) => t.id === taskId);
+        if (!currentTask || currentTask.status === newStatus) {
+            return; // No change needed
+        }
+
+        try {
+            await onTaskStatusUpdate(taskId, newStatus);
+        } catch (error) {
+            console.error("Failed to update task status:", error);
+        }
+    };
+
     return (
-        <div className="board">
-            <div className="board__column">
-                <h2 className="board__column-title">TODO</h2>
-
-                <div className="board__column-content">
-                    {todoTasks.map((task) => (
-                        <Task
-                            key={task.id}
-                            id={task.id}
-                            title={task.title}
-                            description={task.description}
-                            status={task.status}
-                            createdAt={task.createdAt}
-                        />
-                    ))}
-                    {todoTasks.length === 0 && <div className="board__empty-state">No tasks in TODO</div>}
-                </div>
+        <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+            <div className="board">
+                <Column status="TODO" title="To Do" tasks={todoTasks} />
+                <Column status="INPROGRESS" title="In Progress" tasks={inProgressTasks} />
+                <Column status="DONE" title="Done" tasks={doneTasks} />
             </div>
-
-            <div className="board__column">
-                <h2 className="board__column-title">IN PROGRESS</h2>
-                <div className="board__column-content">
-                    {inProgressTasks.map((task) => (
-                        <Task
-                            key={task.id}
-                            id={task.id}
-                            title={task.title}
-                            description={task.description}
-                            status={task.status}
-                            createdAt={task.createdAt}
-                        />
-                    ))}
-
-                    {inProgressTasks.length === 0 && <div className="board__empty-state">No tasks in progress</div>}
-                </div>
-            </div>
-
-            <div className="board__column">
-                <h2 className="board__column-title">DONE</h2>
-                <div className="board__column-content">
-                    {doneTasks.map((task) => (
-                        <Task
-                            key={task.id}
-                            id={task.id}
-                            title={task.title}
-                            description={task.description}
-                            status={task.status}
-                            createdAt={task.createdAt}
-                        />
-                    ))}
-
-                    {doneTasks.length === 0 && <div className="board__empty-state">No completed tasks</div>}
-                </div>
-            </div>
-        </div>
+        </DndContext>
     );
 };
 
-export default TodoBoard;
+export default Board;
