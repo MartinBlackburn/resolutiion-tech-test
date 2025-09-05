@@ -42,6 +42,14 @@ button:hover {
     background-color: #0056b3;
 }
 
+button.delete {
+    background-color: #dc3545;
+}
+
+button.delete:hover {
+    background-color: #c82333;
+}
+
 input,
 textarea,
 select {

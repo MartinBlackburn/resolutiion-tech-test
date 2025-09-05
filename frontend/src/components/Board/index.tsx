@@ -16,10 +16,18 @@ import "./styles.css";
 interface IProps {
     tasks: TaskType[];
     onTaskStatusUpdate: (taskId: string, task: TaskType) => Promise<void>;
+    onTaskEdit: (task: TaskType) => void;
+    onTaskDelete: (task: TaskType) => void;
 }
 
 const Board: React.FC<IProps> = (props: IProps) => {
-    const sensors = useSensors(useSensor(PointerSensor));
+    const sensors = useSensors(
+        useSensor(PointerSensor, {
+            activationConstraint: {
+                distance: 10,
+            },
+        })
+    );
 
     const getTasksByStatus = (status: TaskStatus): TaskType[] => {
         return props.tasks.filter((task) => task.status === status);
@@ -53,9 +61,27 @@ const Board: React.FC<IProps> = (props: IProps) => {
     return (
         <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
             <div className="board">
-                <Column status="TODO" title="To Do" tasks={todoTasks} />
-                <Column status="INPROGRESS" title="In Progress" tasks={inProgressTasks} />
-                <Column status="DONE" title="Done" tasks={doneTasks} />
+                <Column
+                    status="TODO"
+                    title="To Do"
+                    tasks={todoTasks}
+                    onEdit={props.onTaskEdit}
+                    onDelete={props.onTaskDelete}
+                />
+                <Column
+                    status="INPROGRESS"
+                    title="In Progress"
+                    tasks={inProgressTasks}
+                    onEdit={props.onTaskEdit}
+                    onDelete={props.onTaskDelete}
+                />
+                <Column
+                    status="DONE"
+                    title="Done"
+                    tasks={doneTasks}
+                    onEdit={props.onTaskEdit}
+                    onDelete={props.onTaskDelete}
+                />
             </div>
         </DndContext>
     );

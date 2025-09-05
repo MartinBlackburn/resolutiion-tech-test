@@ -21,6 +21,7 @@ const Home = () => {
     const [loading, setLoading] = useState(true);
     const [errors, setErrors] = useState<string[]>([]);
     const [taskModal, setTaskModal] = useState<boolean>(false);
+    const [editTask, setEditTask] = useState<TaskType>();
 
     const addError = useCallback(
         (error: string) => {
@@ -99,9 +100,23 @@ const Home = () => {
             <div className="homePage__controls">
                 <button onClick={() => setTaskModal(true)}>Create task</button>
             </div>
-            <Board tasks={tasks} onTaskStatusUpdate={handleUpdateTask} />;
+
+            <Board
+                tasks={tasks}
+                onTaskStatusUpdate={handleUpdateTask}
+                onTaskEdit={(task) => {
+                    setEditTask(task);
+                    setTaskModal(true);
+                }}
+                onTaskDelete={(task) => {
+                    setEditTask(task);
+                    setTaskModal(true);
+                }}
+            />
+
             <ErrorNotification errors={errors} />
-            {taskModal && <CreateTask createTask={handleCreateTask} />}
+
+            {taskModal && <CreateTask updateTask={handleUpdateTask} createTask={handleCreateTask} task={editTask} />}
         </Fragment>
     );
 };

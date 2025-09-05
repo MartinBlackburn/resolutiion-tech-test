@@ -17,6 +17,8 @@ interface IProps {
     status: TaskStatus;
     title: string;
     tasks: Task[];
+    onEdit: (taskId: Task) => void;
+    onDelete: (taskId: Task) => void;
 }
 
 const Column: React.FC<IProps> = (props: IProps) => {
@@ -32,12 +34,13 @@ const Column: React.FC<IProps> = (props: IProps) => {
                 {props.tasks.map((task) => (
                     <TaskComponent
                         key={task.id}
-                        id={task.id}
+                        id={task.id!}
                         title={task.title}
                         description={task.description}
                         status={task.status}
-                        createdAt={task.createdAt}
-                        isDraggable={true}
+                        createdAt={task.createdAt!}
+                        onEdit={() => props.onEdit(task)}
+                        onDelete={() => props.onDelete(task)}
                     />
                 ))}
 
