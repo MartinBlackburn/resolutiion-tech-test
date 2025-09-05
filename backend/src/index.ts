@@ -115,9 +115,9 @@ app.delete("/api/tasks/:id", async (req, res) => {
     try {
         const { id } = req.params;
 
-        await prisma.task.delete({ where: { id } });
+        const deletedTask = await prisma.task.delete({ where: { id } });
 
-        return res.status(204).send();
+        return res.status(204).send(deletedTask);
     } catch (error: unknown) {
         if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025") {
             return res.status(404).json({ error: "Task not found" });

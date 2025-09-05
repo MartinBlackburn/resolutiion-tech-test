@@ -17,7 +17,7 @@ interface IProps {
     tasks: TaskType[];
     onTaskStatusUpdate: (taskId: string, task: TaskType) => Promise<void>;
     onTaskEdit: (task: TaskType) => void;
-    onTaskDelete: (task: TaskType) => void;
+    onTaskDelete: (taskId: string) => void;
 }
 
 const Board: React.FC<IProps> = (props: IProps) => {

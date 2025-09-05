@@ -19,7 +19,7 @@ interface IProps {
     description: string;
     status: TaskStatus;
     createdAt: string | Date;
-    onEdit: (taskId: string) => void;
+    onEdit: () => void;
     onDelete: (taskId: string) => void;
 }
 
@@ -50,7 +50,7 @@ const Task: React.FC<IProps> = (props: IProps) => {
             </time>
 
             <div className="task__actions">
-                <button onClick={() => props.onEdit(props.id)}>Edit</button>
+                <button onClick={() => props.onEdit()}>Edit</button>
                 <button className="delete" onClick={() => props.onDelete(props.id)}>
                     Delete
                 </button>

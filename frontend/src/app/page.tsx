@@ -12,6 +12,7 @@ import ErrorNotification from "@/components/ErrorNotification";
 import { fetchTasks } from "@/utils/fetchTasks";
 import { createTask } from "@/utils/createTask";
 import { updateTask } from "@/utils/updateTask";
+import { deleteTask } from "@/utils/deleteTask";
 
 // types
 import { Task as TaskType } from "@/types/task";
@@ -108,9 +109,19 @@ const Home = () => {
                     setEditTask(task);
                     setTaskModal(true);
                 }}
-                onTaskDelete={(task) => {
-                    setEditTask(task);
-                    setTaskModal(true);
+                onTaskDelete={(taskId) => {
+                    deleteTask({
+                        taskId,
+                        onError: (message) => addError(message),
+                        onSuccess: () => {
+                            fetchTasks({
+                                onError: (message) => addError(message),
+                                onSuccess: (tasks) => {
+                                    setTasks(tasks);
+                                },
+                            });
+                        },
+                    });
                 }}
             />
 

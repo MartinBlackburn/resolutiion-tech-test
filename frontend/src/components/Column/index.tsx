@@ -17,8 +17,8 @@ interface IProps {
     status: TaskStatus;
     title: string;
     tasks: Task[];
-    onEdit: (taskId: Task) => void;
-    onDelete: (taskId: Task) => void;
+    onEdit: (task: Task) => void;
+    onDelete: (taskId: string) => void;
 }
 
 const Column: React.FC<IProps> = (props: IProps) => {
@@ -40,7 +40,7 @@ const Column: React.FC<IProps> = (props: IProps) => {
                         status={task.status}
                         createdAt={task.createdAt!}
                         onEdit={() => props.onEdit(task)}
-                        onDelete={() => props.onDelete(task)}
+                        onDelete={() => props.onDelete(task.id!)}
                     />
                 ))}
 

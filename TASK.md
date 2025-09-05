@@ -27,7 +27,7 @@ Provide UI to:
 
 -   ✅ Add a task
 -   ✅ Edit a task
--   Delete a task
+-   ✅ Delete a task
 -   ✅ Drag and drop tasks between columns (updates backend).
 
 Use TypeScript throughout and show proper typing (no any).
@@ -36,7 +36,6 @@ Use TypeScript throughout and show proper typing (no any).
 
 -   Add search/filter for tasks.
 -   ✅ Implement basic optimistic updates with React Query (or equivalent).
-    -   This was doing in a basic way where the tasks are fetch after an update, without a library. Given more time I would use Redux or React Query to manage this
 -   Write one or two simple tests (backend route test or frontend component test).
 -   ✅ Containerize with Docker for easy run.
 
