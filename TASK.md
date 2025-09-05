@@ -25,7 +25,7 @@ Display a task board (like a simplified Trello):
 
 Provide UI to:
 
--   Add a task
+-   ✅ Add a task
 -   Edit a task
 -   Delete a task
 -   ✅ Drag and drop tasks between columns (updates backend).

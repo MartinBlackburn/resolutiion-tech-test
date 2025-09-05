@@ -5,6 +5,7 @@ import { useEffect, useState, Fragment, useCallback } from "react";
 
 // components
 import Board from "@/components/Board";
+import CreateTask from "@/components/CreateTask";
 import ErrorNotification from "@/components/ErrorNotification";
 
 // types
@@ -14,6 +15,7 @@ const Home = () => {
     const [tasks, setTasks] = useState<TaskType[]>([]);
     const [loading, setLoading] = useState(true);
     const [errors, setErrors] = useState<string[]>([]);
+    const [createTaskModal, setCreateTaskModal] = useState<boolean>(false);
 
     const addError = useCallback(
         (error: string) => {
@@ -40,6 +42,32 @@ const Home = () => {
             addError("Error fetching tasks");
         }
     }, [addError]);
+
+    const createTask = useCallback(
+        async (task: TaskType) => {
+            try {
+                const response = await fetch("http://localhost:3001/api/tasks", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(task),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+            } catch (err) {
+                console.error("Error creating task:", err);
+
+                addError("Error creating task");
+            } finally {
+                fetchTasks();
+                setCreateTaskModal(false);
+            }
+        },
+        [addError, fetchTasks]
+    );
 
     useEffect(() => {
         fetchTasks();
@@ -95,8 +123,12 @@ const Home = () => {
 
     return (
         <Fragment>
+            <div className="homePage__controls">
+                <button onClick={() => setCreateTaskModal(true)}>Create task</button>
+            </div>
             <Board tasks={tasks} onTaskStatusUpdate={handleTaskStatusUpdate} />;
             <ErrorNotification errors={errors} />
+            {createTaskModal && <CreateTask createTask={createTask} />}
         </Fragment>
     );
 };

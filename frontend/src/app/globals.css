@@ -1,6 +1,9 @@
 body {
+    padding: 20px;
     color: #333;
     font-family: Arial, Helvetica, sans-serif;
+
+    background-color: #f4f4f4;
 
     overflow-x: hidden;
 }
@@ -14,4 +17,41 @@ body {
 .homePage {
     padding: 24px;
     text-align: center;
+}
+
+.homePage__controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+
+    color: #fff;
+
+    background-color: #007bff;
+
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+input,
+textarea,
+select {
+    padding: 10px 20px;
+    border: 1px solid #959696;
+    border-radius: 5px;
+
+    background-color: #ffffff;
+}
+
+textarea {
+    height: 100px;
 }
