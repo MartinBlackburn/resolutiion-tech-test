@@ -1,10 +1,11 @@
 "use client";
 
 // libraries
-import { useEffect, useState } from "react";
+import { useEffect, useState, Fragment, useCallback } from "react";
 
 // components
 import Board from "@/components/Board";
+import ErrorNotification from "@/components/ErrorNotification";
 
 // types
 import { Task as TaskType, TaskStatus } from "@/types/task";
@@ -12,9 +13,16 @@ import { Task as TaskType, TaskStatus } from "@/types/task";
 const Home = () => {
     const [tasks, setTasks] = useState<TaskType[]>([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const [errors, setErrors] = useState<string[]>([]);
 
-    const fetchTasks = async () => {
+    const addError = useCallback(
+        (error: string) => {
+            setErrors([...errors, error]);
+        },
+        [errors]
+    );
+
+    const fetchTasks = useCallback(async () => {
         try {
             const response = await fetch("http://localhost:3001/api/tasks");
 
@@ -28,13 +36,23 @@ const Home = () => {
             setLoading(false);
         } catch (err) {
             console.error("Error fetching tasks:", err);
-            setError(err instanceof Error ? err.message : "An error occurred");
+
+            addError("Error fetching tasks");
         }
-    };
+    }, [addError]);
 
     useEffect(() => {
         fetchTasks();
-    }, []);
+    }, [fetchTasks]);
+
+    useEffect(() => {
+        if (errors.length > 0) {
+            setTimeout(() => {
+                errors.pop();
+                setErrors([...errors]);
+            }, 3000);
+        }
+    }, [errors]);
 
     const handleTaskStatusUpdate = async (taskId: string, newStatus: TaskStatus) => {
         try {
@@ -58,6 +76,8 @@ const Home = () => {
             setTasks((prevTasks) => prevTasks.map((task) => (task.id === taskId ? { ...task, ...updatedTask } : task)));
         } catch (error) {
             console.error("Error updating task status:", error);
+
+            addError("Error moving task");
         } finally {
             // refetch the tasks
             // more useful on error to undo the change, but also fetches the latest changes
@@ -73,15 +93,12 @@ const Home = () => {
         );
     }
 
-    if (error) {
-        return (
-            <div className="homePage">
-                <p>Error loading tasks: {error}</p>
-            </div>
-        );
-    }
-
-    return <Board tasks={tasks} onTaskStatusUpdate={handleTaskStatusUpdate} />;
+    return (
+        <Fragment>
+            <Board tasks={tasks} onTaskStatusUpdate={handleTaskStatusUpdate} />;
+            <ErrorNotification errors={errors} />
+        </Fragment>
+    );
 };
 
 export default Home;

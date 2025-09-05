@@ -1,0 +1,13 @@
+.errorNotification {
+    padding: 16px;
+    border: 1px solid #ec4141;
+    border-radius: 8px;
+
+    background-color: #f4c6c6;
+
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+}
