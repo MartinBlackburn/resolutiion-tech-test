@@ -21,7 +21,7 @@ export const validTitle = (value: string) => {
         return false;
     }
 
-    if (value.length > 25) {
+    if (value.length > 50) {
         return false;
     }
 

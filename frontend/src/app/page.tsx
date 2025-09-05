@@ -8,6 +8,10 @@ import Board from "@/components/Board";
 import CreateTask from "@/components/CreateTask";
 import ErrorNotification from "@/components/ErrorNotification";
 
+// utils
+import { fetchTasks } from "@/utils/fetchTasks";
+import { createTask } from "@/utils/createTask";
+
 // types
 import { Task as TaskType, TaskStatus } from "@/types/task";
 
@@ -24,54 +28,31 @@ const Home = () => {
         [errors]
     );
 
-    const fetchTasks = useCallback(async () => {
-        try {
-            const response = await fetch("http://localhost:3001/api/tasks");
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-
-            setTasks(data);
-            setLoading(false);
-        } catch (err) {
-            console.error("Error fetching tasks:", err);
-
-            addError("Error fetching tasks");
-        }
-    }, [addError]);
-
-    const createTask = useCallback(
-        async (task: TaskType) => {
-            try {
-                const response = await fetch("http://localhost:3001/api/tasks", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(task),
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-            } catch (err) {
-                console.error("Error creating task:", err);
-
-                addError("Error creating task");
-            } finally {
-                fetchTasks();
+    const handleCreateTask = (task: TaskType) => {
+        createTask({
+            task: task,
+            onError: (message) => addError(message),
+            onSuccess: () => {
                 setCreateTaskModal(false);
-            }
-        },
-        [addError, fetchTasks]
-    );
+                fetchTasks({
+                    onError: (message) => addError(message),
+                    onSuccess: (tasks) => {
+                        setTasks(tasks);
+                    },
+                });
+            },
+        });
+    };
 
     useEffect(() => {
-        fetchTasks();
-    }, [fetchTasks]);
+        fetchTasks({
+            onError: (message) => addError(message),
+            onSuccess: (tasks) => {
+                setTasks(tasks);
+                setLoading(false);
+            },
+        });
+    }, [addError]);
 
     useEffect(() => {
         if (errors.length > 0) {
@@ -109,7 +90,13 @@ const Home = () => {
         } finally {
             // refetch the tasks
             // more useful on error to undo the change, but also fetches the latest changes
-            fetchTasks();
+            fetchTasks({
+                onError: (message) => addError(message),
+                onSuccess: (tasks) => {
+                    setTasks(tasks);
+                    setLoading(false);
+                },
+            });
         }
     };
 
@@ -128,7 +115,7 @@ const Home = () => {
             </div>
             <Board tasks={tasks} onTaskStatusUpdate={handleTaskStatusUpdate} />;
             <ErrorNotification errors={errors} />
-            {createTaskModal && <CreateTask createTask={createTask} />}
+            {createTaskModal && <CreateTask createTask={handleCreateTask} />}
         </Fragment>
     );
 };

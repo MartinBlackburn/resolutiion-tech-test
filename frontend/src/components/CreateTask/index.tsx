@@ -14,8 +14,6 @@ interface IProps {
 }
 
 const CreateTask: React.FC<IProps> = (props: IProps) => {
-    const { createTask } = props;
-
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [status, setStatus] = useState("TODO");
@@ -23,7 +21,7 @@ const CreateTask: React.FC<IProps> = (props: IProps) => {
     const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
 
-        createTask({ title, description, status: status as TaskStatus });
+        props.createTask({ title, description, status: status as TaskStatus });
     };
 
     return (
@@ -38,6 +36,7 @@ const CreateTask: React.FC<IProps> = (props: IProps) => {
                     required
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
+                    maxLength={50}
                 />
 
                 <textarea
@@ -46,6 +45,7 @@ const CreateTask: React.FC<IProps> = (props: IProps) => {
                     required
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
+                    maxLength={255}
                 />
 
                 <select className="createTask__status" value={status} onChange={(e) => setStatus(e.target.value)}>
