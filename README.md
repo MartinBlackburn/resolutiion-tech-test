@@ -87,6 +87,12 @@ root/
 
 ### Trade offs
 
--   The data validators for the input are very basic, given more time these would return a reason why the validation failed to display a better error to the user.
+-   The data validators for the input are very basic, given more time these would return a reason why the validation failed and used to display a better error to the user.
 -   The input isn't sanitised very well and relies on Prisma doing it, it could be manually sanitised for better security.
--   Database using SQLlite, this was done for speed, and so I could commit the project with some example data.
+-   Database is using SQLlite, this was done for speed, and so I could commit is to the project with some example data.
+
+### Improvements
+
+-   sorting of the tasks
+    -   this would need a ordinal storing in the database and updating as needed
+-   better error messaging, currently there is only server side validation of the task data, this could also be done client side and show a better error to the user

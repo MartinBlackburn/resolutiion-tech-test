@@ -11,15 +11,16 @@ import ErrorNotification from "@/components/ErrorNotification";
 // utils
 import { fetchTasks } from "@/utils/fetchTasks";
 import { createTask } from "@/utils/createTask";
+import { updateTask } from "@/utils/updateTask";
 
 // types
-import { Task as TaskType, TaskStatus } from "@/types/task";
+import { Task as TaskType } from "@/types/task";
 
 const Home = () => {
     const [tasks, setTasks] = useState<TaskType[]>([]);
     const [loading, setLoading] = useState(true);
     const [errors, setErrors] = useState<string[]>([]);
-    const [createTaskModal, setCreateTaskModal] = useState<boolean>(false);
+    const [taskModal, setTaskModal] = useState<boolean>(false);
 
     const addError = useCallback(
         (error: string) => {
@@ -28,12 +29,12 @@ const Home = () => {
         [errors]
     );
 
-    const handleCreateTask = (task: TaskType) => {
-        createTask({
+    const handleCreateTask = async (task: TaskType) => {
+        await createTask({
             task: task,
             onError: (message) => addError(message),
             onSuccess: () => {
-                setCreateTaskModal(false);
+                setTaskModal(false);
                 fetchTasks({
                     onError: (message) => addError(message),
                     onSuccess: (tasks) => {
@@ -44,6 +45,27 @@ const Home = () => {
         });
     };
 
+    const handleUpdateTask = async (taskId: string, task: TaskType) => {
+        await updateTask({
+            taskId: taskId,
+            task: task,
+            onError: (message) => addError(message),
+            onSuccess: (updatedTask) => {
+                setTasks((prevTasks) =>
+                    prevTasks.map((task) => (task.id === taskId ? { ...task, ...updatedTask } : task))
+                );
+                setTaskModal(false);
+                fetchTasks({
+                    onError: (message) => addError(message),
+                    onSuccess: (tasks) => {
+                        setTasks(tasks);
+                    },
+                });
+            },
+        });
+    };
+
+    // fetch the tasks on mount
     useEffect(() => {
         fetchTasks({
             onError: (message) => addError(message),
@@ -54,6 +76,7 @@ const Home = () => {
         });
     }, [addError]);
 
+    // remove errors after 3 seconds
     useEffect(() => {
         if (errors.length > 0) {
             setTimeout(() => {
@@ -62,43 +85,6 @@ const Home = () => {
             }, 3000);
         }
     }, [errors]);
-
-    const handleTaskStatusUpdate = async (taskId: string, newStatus: TaskStatus) => {
-        try {
-            const response = await fetch(`http://localhost:3001/api/tasks/${taskId}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ status: newStatus }),
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const updatedTask = await response.json();
-
-            // Update the task in the local state
-            // if an error happens, the task will be reverted to the previous state by the
-            // fetchTasks in the finally block
-            setTasks((prevTasks) => prevTasks.map((task) => (task.id === taskId ? { ...task, ...updatedTask } : task)));
-        } catch (error) {
-            console.error("Error updating task status:", error);
-
-            addError("Error moving task");
-        } finally {
-            // refetch the tasks
-            // more useful on error to undo the change, but also fetches the latest changes
-            fetchTasks({
-                onError: (message) => addError(message),
-                onSuccess: (tasks) => {
-                    setTasks(tasks);
-                    setLoading(false);
-                },
-            });
-        }
-    };
 
     if (loading) {
         return (
@@ -111,11 +97,11 @@ const Home = () => {
     return (
         <Fragment>
             <div className="homePage__controls">
-                <button onClick={() => setCreateTaskModal(true)}>Create task</button>
+                <button onClick={() => setTaskModal(true)}>Create task</button>
             </div>
-            <Board tasks={tasks} onTaskStatusUpdate={handleTaskStatusUpdate} />;
+            <Board tasks={tasks} onTaskStatusUpdate={handleUpdateTask} />;
             <ErrorNotification errors={errors} />
-            {createTaskModal && <CreateTask createTask={handleCreateTask} />}
+            {taskModal && <CreateTask createTask={handleCreateTask} />}
         </Fragment>
     );
 };

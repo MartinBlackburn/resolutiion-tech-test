@@ -8,7 +8,6 @@ interface ICreateTasksProps {
 }
 
 export const createTask = async (props: ICreateTasksProps) => {
-    console.log("task", props.task);
     try {
         const response = await fetch("http://localhost:3001/api/tasks", {
             method: "POST",

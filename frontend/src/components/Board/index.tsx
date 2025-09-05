@@ -15,14 +15,14 @@ import "./styles.css";
 
 interface IProps {
     tasks: TaskType[];
-    onTaskStatusUpdate: (taskId: string, newStatus: TaskStatus) => Promise<void>;
+    onTaskStatusUpdate: (taskId: string, task: TaskType) => Promise<void>;
 }
 
-const Board: React.FC<IProps> = ({ tasks, onTaskStatusUpdate }) => {
+const Board: React.FC<IProps> = (props: IProps) => {
     const sensors = useSensors(useSensor(PointerSensor));
 
     const getTasksByStatus = (status: TaskStatus): TaskType[] => {
-        return tasks.filter((task) => task.status === status);
+        return props.tasks.filter((task) => task.status === status);
     };
 
     const todoTasks = getTasksByStatus("TODO");
@@ -38,13 +38,13 @@ const Board: React.FC<IProps> = ({ tasks, onTaskStatusUpdate }) => {
         const newStatus = over.id as TaskStatus;
 
         // Find the current task
-        const currentTask = tasks.find((t) => t.id === taskId);
+        const currentTask = props.tasks.find((t) => t.id === taskId);
         if (!currentTask || currentTask.status === newStatus) {
             return; // No change needed
         }
 
         try {
-            await onTaskStatusUpdate(taskId, newStatus);
+            await props.onTaskStatusUpdate(taskId, { ...currentTask, status: newStatus });
         } catch (error) {
             console.error("Failed to update task status:", error);
         }
