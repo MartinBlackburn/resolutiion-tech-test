@@ -93,8 +93,10 @@ root/
 
 ### Improvements
 
--   sorting of the tasks
+-   sorting of the tasks on the board
     -   this would need a ordinal storing in the database and updating as needed
 -   better error messaging, currently there is only server side validation of the task data, this could also be done client side and show a better error to the user
 -   confirmation when deleting a task
 -   the optimistic updates are very basic - the tasks are fetched after an create/update, without a library. Given more time I would use Redux or React Query to manage this in a much nicer way
+-   use a monorepo setup (Lerna, Turborepo, NX, etc), so the two apps can be versioned and deployed separately
+-   better unit test coverage, I've only tested one component, one API util and part of the backend routes

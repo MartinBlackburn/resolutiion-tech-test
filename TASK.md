@@ -36,7 +36,7 @@ Use TypeScript throughout and show proper typing (no any).
 
 -   Add search/filter for tasks.
 -   ✅ Implement basic optimistic updates with React Query (or equivalent).
--   Write one or two simple tests (backend route test or frontend component test).
+-   ✅ Write one or two simple tests (backend route test or frontend component test).
 -   ✅ Containerize with Docker for easy run.
 
 ## Clarifications
